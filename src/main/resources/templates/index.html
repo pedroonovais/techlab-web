@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TechLab × Mottu — Mapeamento Inteligente de Pátios</title>
+  <meta name="description" content="Solução IoT & Visão Computacional para mapeamento inteligente de pátios em tempo real." />
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'mottu-green': '#2EB22C',
+            'mottu-black': '#1A1A1A',
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
+    .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
+    .button-hover-effect { transition: transform .3s ease, box-shadow .3s ease; }
+    .button-hover-effect:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05); }
+  </style>
+</head>
+<body class="bg-white text-mottu-black">
+  <!-- Header -->
+  <header id="siteHeader" class="bg-mottu-black text-white sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-5">
+        <div class="flex items-center">
+          <span class="text-xl font-bold text-mottu-green mr-2">TechLab</span>
+          <span class="text-xl font-bold">×</span>
+          <span class="text-xl font-bold ml-2">Mottu</span>
+        </div>
+        <!-- Desktop menu -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="#inicio" class="text-white hover:text-mottu-green transition-colors duration-200 py-2 relative group">Início<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-mottu-green transition-all duration-300 group-hover:w-full"></span></a>
+          <a href="#desafio" class="text-white hover:text-mottu-green transition-colors duration-200 py-2 relative group">Desafio<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-mottu-green transition-all duration-300 group-hover:w-full"></span></a>
+          <a href="#solucao" class="text-white hover:text-mottu-green transition-colors duration-200 py-2 relative group">Solução<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-mottu-green transition-all duration-300 group-hover:w-full"></span></a>
+          <a href="#arquitetura" class="text-white hover:text-mottu-green transition-colors duration-200 py-2 relative group">Arquitetura<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-mottu-green transition-all duration-300 group-hover:w-full"></span></a>
+          <a href="#dashboard" class="text-white hover:text-mottu-green transition-colors duration-200 py-2 relative group">Dashboard<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-mottu-green transition-all duration-300 group-hover:w-full"></span></a>
+          <a href="#time" class="text-white hover:text-mottu-green transition-colors duration-200 py-2 relative group">Time<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-mottu-green transition-all duration-300 group-hover:w-full"></span></a>
+          <a href="#contato" class="text-white hover:text-mottu-green transition-colors duration-200 py-2 relative group">Contato<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-mottu-green transition-all duration-300 group-hover:w-full"></span></a>
+        </nav>
+        <!-- Contact button - desktop -->
+        <div class="hidden md:block">
+          <a href="#contato" class="bg-mottu-green text-mottu-black px-5 py-2 rounded-md font-medium hover:bg-opacity-90 transition-all duration-200">Fale Conosco</a>
+        </div>
+        <!-- Mobile menu button -->
+        <button id="mobileMenuBtn" type="button" class="md:hidden p-2 rounded-md text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-mottu-green" aria-label="Abrir menu principal">
+          <i data-lucide="menu" class="h-6 w-6"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="md:hidden fixed inset-0 bg-mottu-black bg-opacity-95 backdrop-blur-md z-40 transform translate-x-full transition-transform duration-300 ease-in-out" style="top:64px;">
+      <div class="px-4 pt-2 pb-3 space-y-1 sm:px-3">
+        <a href="#inicio" class="block px-3 py-4 text-white text-lg hover:text-mottu-green border-b border-gray-800">Início</a>
+        <a href="#desafio" class="block px-3 py-4 text-white text-lg hover:text-mottu-green border-b border-gray-800">Desafio</a>
+        <a href="#solucao" class="block px-3 py-4 text-white text-lg hover:text-mottu-green border-b border-gray-800">Solução</a>
+        <a href="#arquitetura" class="block px-3 py-4 text-white text-lg hover:text-mottu-green border-b border-gray-800">Arquitetura</a>
+        <a href="#dashboard" class="block px-3 py-4 text-white text-lg hover:text-mottu-green border-b border-gray-800">Dashboard</a>
+        <a href="#time" class="block px-3 py-4 text-white text-lg hover:text-mottu-green border-b border-gray-800">Time</a>
+        <a href="#contato" class="block w-full bg-mottu-green text-mottu-black px-5 py-3 rounded-md font-medium text-center hover:bg-opacity-90">Fale Conosco</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <!-- Hero -->
+    <section id="inicio" class="bg-mottu-black text-white py-24 md:py-32 relative overflow-hidden">
+      <div class="absolute top-0 left-1/4 w-1/2 h-1/2 bg-mottu-green opacity-10 rounded-full blur-[120px] -translate-y-1/2"></div>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="flex flex-col md:flex-row items-center">
+          <div class="md:w-1/2 mb-12 md:mb-0" id="heroHeading">
+            <div class="inline-block bg-mottu-green text-mottu-black px-3 py-1 rounded-full text-sm font-semibold mb-6">Solução IoT & Visão Computacional</div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Mapeamento Inteligente de Pátios <span class="text-mottu-green">em Tempo Real</span></h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-xl">Mais precisão, eficiência e escala para a operação da Mottu.</p>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+              <a href="#dashboard" class="group bg-mottu-green text-mottu-black px-8 py-4 rounded-md font-medium text-center hover:bg-opacity-90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-mottu-green focus:ring-opacity-50 flex items-center justify-center">
+                Ver Dashboard
+                <i data-lucide="arrow-right" class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"></i>
+              </a>
+              <a href="#solucao" class="group border border-mottu-green text-mottu-green px-8 py-4 rounded-md font-medium text-center hover:bg-mottu-green hover:bg-opacity-10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-mottu-green focus:ring-opacity-50 flex items-center justify-center">
+                Conhecer a Solução
+                <i data-lucide="arrow-down" class="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform"></i>
+              </a>
+            </div>
+          </div>
+          <div class="md:w-1/2" id="heroImage">
+            <div class="relative rounded-lg overflow-hidden shadow-2xl">
+              <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pátio da Mottu com motos organizadas" class="w-full h-auto rounded-lg transform hover:scale-105 transition-transform duration-500"/>
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-mottu-black to-transparent p-6">
+                <div id="heroStats" class="grid grid-cols-2 gap-4">
+                  <div class="bg-white/10 backdrop-blur-lg p-4 rounded-lg border border-white/20">
+                    <p class="text-3xl font-bold">+50mil</p>
+                    <p class="text-sm">Motos em operação</p>
+                  </div>
+                  <div class="bg-white/10 backdrop-blur-lg p-4 rounded-lg border border-white/20">
+                    <p class="text-3xl font-bold">+30</p>
+                    <p class="text-sm">Filiais no Brasil e México</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce">
+          <span class="text-sm text-gray-400 mb-2">Role para saber mais</span>
+          <i data-lucide="arrow-down" class="h-5 w-5 text-mottu-green"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Challenge -->
+    <section id="desafio" class="py-24 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-5xl font-bold text-mottu-black mb-4">O Desafio</h2>
+          <div class="w-20 h-1 bg-mottu-green mx-auto mb-8"></div>
+        </div>
+        <div class="flex flex-col md:flex-row md:space-x-12 items-center">
+          <div id="challengeText" class="md:w-1/2 mb-12 md:mb-0">
+            <div class="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100">
+              <p class="text-lg mb-6 leading-relaxed">A <span class="font-semibold">Mottu</span> é uma empresa líder em aluguel de motos para entregadores no Brasil e México, com mais de 50 mil motos em operação e presença em mais de 30 cidades.</p>
+              <p class="text-lg mb-6 leading-relaxed">Com o rápido crescimento da empresa, o mapeamento manual das motos nas filiais tornou-se um <span class="text-mottu-green font-semibold">desafio significativo</span>. A necessidade de localizar motos com precisão, em tempo real, e com uma interface intuitiva que escale com a operação é crucial para o sucesso do negócio.</p>
+              <p class="text-lg font-medium leading-relaxed">A falta de um sistema eficiente de mapeamento impacta diretamente a produtividade das equipes, a satisfação dos entregadores e a capacidade de escalar o negócio de forma sustentável.</p>
+            </div>
+            <div class="mt-8 grid grid-cols-2 gap-6">
+              <div class="bg-mottu-green p-6 rounded-xl text-white">
+                <p class="text-3xl font-bold">15%</p>
+                <p class="text-sm mt-1">Tempo operacional perdido em buscas</p>
+              </div>
+              <div class="bg-mottu-black p-6 rounded-xl text-white">
+                <p class="text-3xl font-bold">8h</p>
+                <p class="text-sm mt-1">Tempo médio para inventário completo</p>
+              </div>
+            </div>
+          </div>
+          <div id="challengeCards" class="md:w-1/2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:border-mottu-green transition-colors duration-300 hover:shadow-xl transform hover:-translate-y-2">
+                <div class="mb-5 bg-gray-50 p-3 rounded-full inline-block"><i data-lucide="search-x" class="h-8 w-8 text-mottu-green"></i></div>
+                <h3 class="text-xl font-semibold mb-3 text-mottu-black">Erros de Localização</h3>
+                <p class="text-gray-700">Dificuldade em encontrar motos específicas em pátios grandes, causando atrasos e retrabalho.</p>
+              </div>
+              <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:border-mottu-green transition-colors duration-300 hover:shadow-xl transform hover:-translate-y-2">
+                <div class="mb-5 bg-gray-50 p-3 rounded-full inline-block"><i data-lucide="refresh-cw" class="h-8 w-8 text-mottu-green"></i></div>
+                <h3 class="text-xl font-semibold mb-3 text-mottu-black">Retrabalho Operacional</h3>
+                <p class="text-gray-700">Verificações manuais constantes para atualizar o status e posição das motos no pátio.</p>
+              </div>
+              <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:border-mottu-green transition-colors duration-300 hover:shadow-xl transform hover:-translate-y-2">
+                <div class="mb-5 bg-gray-50 p-3 rounded-full inline-block"><i data-lucide="alert-triangle" class="h-8 w-8 text-mottu-green"></i></div>
+                <h3 class="text-xl font-semibold mb-3 text-mottu-black">Falta de Padronização</h3>
+                <p class="text-gray-700">Cada filial adota processos diferentes para controle e mapeamento do pátio.</p>
+              </div>
+              <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:border-mottu-green transition-colors duration-300 hover:shadow-xl transform hover:-translate-y-2">
+                <div class="mb-5 bg-gray-50 p-3 rounded-full inline-block"><i data-lucide="clock" class="h-8 w-8 text-mottu-green"></i></div>
+                <h3 class="text-xl font-semibold mb-3 text-mottu-black">Atrasos e Riscos</h3>
+                <p class="text-gray-700">Tempo perdido na localização impacta a entrega aos entregadores e gera riscos operacionais.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solution (carousel + flow) -->
+    <section id="solucao" class="py-24 bg-mottu-black text-white relative">
+      <div class="absolute bottom-0 right-1/4 w-1/2 h-1/2 bg-mottu-green opacity-10 rounded-full blur-[120px] translate-y-1/2"></div>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-5xl font-bold mb-6">Nossa Solução</h2>
+          <div class="w-20 h-1 bg-mottu-green mx-auto mb-8"></div>
+          <p class="text-xl text-gray-300 max-w-3xl mx-auto">O TechLab desenvolveu um sistema integrado que combina IoT e visão computacional para mapear com precisão a localização de cada moto nos pátios da Mottu.</p>
+        </div>
+
+        <!-- Feature carousel -->
+        <div class="mb-20" id="features">
+          <div class="overflow-hidden">
+            <div id="featuresTrack" class="flex transition-transform duration-500 ease-in-out"><!-- slides --></div>
+          </div>
+          <div class="flex justify-between items-center mt-8">
+            <div id="featuresDots" class="flex space-x-2"></div>
+            <div class="flex space-x-3">
+              <button id="prevFeature" class="p-2 rounded-full bg-gray-800 hover:bg-mottu-green text-white" aria-label="Anterior"><i data-lucide="chevron-left" class="h-5 w-5"></i></button>
+              <button id="nextFeature" class="p-2 rounded-full bg-gray-800 hover:bg-mottu-green text-white" aria-label="Próximo"><i data-lucide="chevron-right" class="h-5 w-5"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Operational flow -->
+        <div id="flow" class="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-10 mt-20">
+          <h3 class="text-2xl font-bold mb-10 text-center">Fluxo Operacional</h3>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+            <div class="bg-gray-800 p-6 rounded-xl text-center transform hover:-translate-y-2 transition-all duration-300 border border-gray-700 hover:border-mottu-green">
+              <div class="bg-mottu-green text-mottu-black rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-5">1</div>
+              <h4 class="font-medium mb-3 text-lg">Entrada da Moto</h4>
+              <p class="text-gray-400">Recebimento e registro inicial da moto no sistema</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl text-center transform hover:-translate-y-2 transition-all duration-300 border border-gray-700 hover:border-mottu-green">
+              <div class="bg-mottu-green text-mottu-black rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-5">2</div>
+              <h4 class="font-medium mb-3 text-lg">Vínculo RFID</h4>
+              <p class="text-gray-400">Associação do dispositivo RFID à moto específica</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl text-center transform hover:-translate-y-2 transition-all duration-300 border border-gray-700 hover:border-mottu-green">
+              <div class="bg-mottu-green text-mottu-black rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-5">3</div>
+              <h4 class="font-medium mb-3 text-lg">Posicionamento</h4>
+              <p class="text-gray-400">Estacionamento da moto no pátio com registro automático</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl text-center transform hover:-translate-y-2 transition-all duration-300 border border-gray-700 hover:border-mottu-green">
+              <div class="bg-mottu-green text-mottu-black rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-5">4</div>
+              <h4 class="font-medium mb-3 text-lg">Monitoramento</h4>
+              <p class="text-gray-400">Acompanhamento contínuo da posição e status</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl text-center transform hover:-translate-y-2 transition-all duration-300 border border-gray-700 hover:border-mottu-green">
+              <div class="bg-mottu-green text-mottu-black rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-5">5</div>
+              <h4 class="font-medium mb-3 text-lg">Saída</h4>
+              <p class="text-gray-400">Devolução do RFID e registro de saída</p>
+            </div>
+          </div>
+          <div class="mt-12 text-center">
+            <a href="#dashboard" class="inline-flex items-center bg-mottu-green text-mottu-black px-8 py-4 rounded-md font-medium hover:bg-opacity-90 transition-all duration-300">Ver o Dashboard em Ação <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture (tabs) -->
+    <section id="arquitetura" class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-mottu-black mb-4">Arquitetura da Solução</h2>
+          <div class="w-20 h-1 bg-mottu-green mx-auto mb-6"></div>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Nossa solução foi projetada com arquitetura modular e escalável, seguindo as melhores práticas de engenharia de software e integração de sistemas.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="flex flex-wrap border-b border-gray-200" id="archTabs">
+            <button data-tab="iot" class="flex items-center px-4 py-3 text-sm sm:text-base font-medium focus:outline-none"><i data-lucide="server" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Camada IoT</span></button>
+            <button data-tab="processing" class="flex items-center px-4 py-3 text-sm sm:text-base font-medium focus:outline-none"><i data-lucide="layers" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Ingestão e Processamento</span></button>
+            <button data-tab="vision" class="flex items-center px-4 py-3 text-sm sm:text-base font-medium focus:outline-none"><i data-lucide="eye" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Visão Computacional</span></button>
+            <button data-tab="web" class="flex items-center px-4 py-3 text-sm sm:text-base font-medium focus:outline-none"><i data-lucide="layout-dashboard" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Aplicação Web</span></button>
+            <button data-tab="analytics" class="flex items-center px-4 py-3 text-sm sm:text-base font-medium focus:outline-none"><i data-lucide="bar-chart-3" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Dados & Analytics</span></button>
+          </div>
+          <div class="p-6" id="archContent"><!-- filled by JS --></div>
+        </div>
+        <div class="mt-12 text-center">
+          <p class="text-gray-600 mb-4">Nossa arquitetura segue os princípios TOGAF/Archimate, abrangendo as camadas:</p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <span class="bg-mottu-black text-white px-4 py-2 rounded-full text-sm">Business Layer</span>
+            <span class="bg-mottu-black text-white px-4 py-2 rounded-full text-sm">Application Layer</span>
+            <span class="bg-mottu-black text-white px-4 py-2 rounded-full text-sm">Technology Layer</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard (tabs) -->
+    <section id="dashboard" class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-mottu-black mb-4">Dashboard Operacional</h2>
+          <div class="w-20 h-1 bg-mottu-green mx-auto mb-6"></div>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Controle completo do pátio em uma interface intuitiva e poderosa.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+          <div class="flex flex-wrap border-b border-gray-200 bg-gray-50" id="dashTabs">
+            <button data-tab="map" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="map" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Mapa do Pátio</span></button>
+            <button data-tab="search" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="search" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Buscar Moto</span></button>
+            <button data-tab="inventory" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="box" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Inventário RFID</span></button>
+            <button data-tab="rfid" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="tag" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Vincular RFID</span></button>
+            <button data-tab="alerts" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="bell" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Alertas</span></button>
+            <button data-tab="kpis" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="bar-chart-2" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">KPIs</span></button>
+            <button data-tab="admin" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="users" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Administração</span></button>
+            <button data-tab="manual" class="flex items-center px-3 py-3 text-sm font-medium"><i data-lucide="pen-tool" class="h-5 w-5 mr-2"></i><span class="hidden sm:inline">Modo Manual</span></button>
+          </div>
+          <div class="p-4" id="dashContent"><!-- filled by JS --></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Time (placeholder) -->
+    <section id="time" class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl md:text-4xl font-bold mb-2">Nosso Time</h2>
+          <div class="w-20 h-1 bg-mottu-green mx-auto mb-6"></div>
+          <p class="text-gray-600">Profissionais apaixonados por eficiência operacional.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-xl border border-gray-200 text-center">
+            <div class="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4"></div>
+            <h3 class="font-semibold">Líder de Produto</h3>
+            <p class="text-gray-500 text-sm">Estratégia & Roadmap</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-gray-200 text-center">
+            <div class="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4"></div>
+            <h3 class="font-semibold">Arquiteto de Soluções</h3>
+            <p class="text-gray-500 text-sm">TOGAF/Archimate</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-gray-200 text-center">
+            <div class="w-24 h-24 rounded-full bg-gray-200 mx-auto mb-4"></div>
+            <h3 class="font-semibold">Engenheiro de Dados</h3>
+            <p class="text-gray-500 text-sm">KPIs & Analytics</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contato" class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl md:text-4xl font-bold mb-2">Fale Conosco</h2>
+        <div class="w-20 h-1 bg-mottu-green mx-auto mb-6"></div>
+          <p class="text-gray-600">Quer levar o mapeamento inteligente para sua operação? Envie uma mensagem.</p>
+        </div>
+        <form class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input class="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-mottu-green" placeholder="Nome" required />
+          <input type="email" class="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-mottu-green" placeholder="E-mail" required />
+          <input class="md:col-span-2 border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-mottu-green" placeholder="Assunto" />
+          <textarea rows="5" class="md:col-span-2 border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-mottu-green" placeholder="Mensagem..."></textarea>
+          <button class="md:col-span-2 bg-mottu-green text-mottu-black px-6 py-3 rounded-md font-semibold hover:bg-opacity-90">Enviar</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-mottu-black text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <button id="toTop" class="absolute -top-6 left-1/2 -translate-x-1/2 bg-mottu-green text-mottu-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-opacity-90" aria-label="Voltar ao topo">
+        <i data-lucide="arrow-up" class="h-6 w-6"></i>
+      </button>
+    </div>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <span class="text-2xl font-bold text-mottu-green mr-2">TechLab</span><span class="text-2xl font-bold">×</span><span class="text-2xl font-bold ml-2">Mottu</span>
+          </div>
+          <p class="mt-2 text-gray-400">Mapeamento Inteligente de Pátios em Tempo Real</p>
+          <div class="flex space-x-4 pt-2 text-gray-400">
+            <a href="#" class="hover:text-mottu-green"><i data-lucide="facebook" class="h-6 w-6"></i></a>
+            <a href="#" class="hover:text-mottu-green"><i data-lucide="twitter" class="h-6 w-6"></i></a>
+            <a href="#" class="hover:text-mottu-green"><i data-lucide="instagram" class="h-6 w-6"></i></a>
+            <a href="#" class="hover:text-mottu-green"><i data-lucide="github" class="h-6 w-6"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-mottu-green">Empresa</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="#" class="hover:text-white">Sobre nós</a></li>
+            <li><a href="#" class="hover:text-white">Nosso Time</a></li>
+            <li><a href="#" class="hover:text-white">Carreiras</a></li>
+            <li><a href="#" class="hover:text-white">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-mottu-green">Soluções</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="#" class="hover:text-white">RFID Ativo</a></li>
+            <li><a href="#" class="hover:text-white">Visão Computacional</a></li>
+            <li><a href="#" class="hover:text-white">Mapeamento em Tempo Real</a></li>
+            <li><a href="#" class="hover:text-white">Análise de Dados</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-mottu-green">Contato</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li class="flex items-start"><i data-lucide="map-pin" class="h-5 w-5 text-mottu-green mr-2 mt-0.5"></i>Av. Paulista, 1000 - Bela Vista<br/>São Paulo - SP, 01310-100</li>
+            <li class="flex items-center"><i data-lucide="phone" class="h-5 w-5 text-mottu-green mr-2"></i>+55 (11) 3456-7890</li>
+            <li class="flex items-center"><i data-lucide="mail" class="h-5 w-5 text-mottu-green mr-2"></i>contato@techlab.com.br</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-sm text-gray-400">© <span id="year"></span> TechLab. Todos os direitos reservados.</p>
+        <div class="mt-4 md:mt-0 flex space-x-6 text-sm text-gray-400">
+          <a href="#" class="hover:text-white">Termos de Uso</a>
+          <a href="#" class="hover:text-white">Política de Privacidade</a>
+          <a href="#" class="hover:text-white">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Icons
+    function refreshIcons(){ if (window.lucide) { window.lucide.createIcons(); } }
+
+    // Header scroll style
+    const siteHeader = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        siteHeader.classList.add('bg-opacity-95','backdrop-blur-sm','shadow-lg');
+      } else {
+        siteHeader.classList.remove('bg-opacity-95','backdrop-blur-sm','shadow-lg');
+      }
+    });
+
+    // Mobile menu
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let mobileOpen = false;
+    mobileBtn.addEventListener('click', () => {
+      mobileOpen = !mobileOpen;
+      mobileMenu.style.transform = mobileOpen ? 'translateX(0)' : 'translateX(100%)';
+      mobileBtn.innerHTML = mobileOpen ? '<i data-lucide="x" class="h-6 w-6"></i>' : '<i data-lucide="menu" class="h-6 w-6"></i>';
+      refreshIcons();
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=>{
+      mobileOpen = false; mobileMenu.style.transform = 'translateX(100%)';
+      mobileBtn.innerHTML = '<i data-lucide="menu" class="h-6 w-6"></i>'; refreshIcons();
+    }));
+
+    // Hero simple staged animations
+    function fadeInSequence(el, delay){ if(!el) return; el.style.opacity=0; el.style.transform='translateY(20px)'; setTimeout(()=>{ el.style.transition='opacity .8s ease, transform .8s ease'; el.style.opacity=1; el.style.transform='translateY(0)'; }, delay); }
+    fadeInSequence(document.getElementById('heroHeading'), 300);
+    fadeInSequence(document.getElementById('heroImage'), 600);
+    fadeInSequence(document.getElementById('heroStats'), 900);
+
+    // Intersection animations for Challenge
+    function animateOnView(el, delay){ if(!el) return; el.style.opacity=0; el.style.transform='translateY(40px)';
+      const obs=new IntersectionObserver(entries=>{ entries.forEach(entry=>{ if(entry.isIntersecting){ setTimeout(()=>{ el.style.transition='opacity .8s ease, transform .8s ease'; el.style.opacity=1; el.style.transform='translateY(0)'; }, delay); obs.unobserve(el);} }); }, {threshold: .2});
+      obs.observe(el);
+    }
+    animateOnView(document.getElementById('challengeText'), 300);
+    animateOnView(document.getElementById('challengeCards'), 600);
+
+    // Features carousel
+    const featuresData = [
+      { icon:'radio', title:'RFID Ativo', desc:'Dispositivos de baixo consumo que emitem sinais periódicos para localização precisa das motos.' },
+      { icon:'eye', title:'Visão Computacional', desc:'Câmeras e algoritmos de IA que complementam a localização e identificam anomalias.' },
+      { icon:'layout-grid', title:'Mapeamento em Tempo Real', desc:'Interface visual que mostra a posição exata das motos no pátio com atualização configurável.' },
+      { icon:'battery-full', title:'Longa Duração', desc:'Dispositivos com bateria otimizada para durar meses sem recarga.' },
+      { icon:'alert-circle', title:'Sistema de Alertas', desc:'Notificações automáticas quando leituras não batem ou há movimentações não autorizadas.' }
+    ];
+    const featuresTrack = document.getElementById('featuresTrack');
+    const featuresDots = document.getElementById('featuresDots');
+    let activeFeature = 0; let featureInterval;
+    function renderFeatures(){
+      featuresTrack.innerHTML = featuresData.map(f=>`
+        <div class="w-full flex-shrink-0 px-4">
+          <div class="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-gray-800 hover:border-mottu-green transition-all duration-300 h-full">
+            <div class="bg-mottu-green rounded-full w-16 h-16 flex items-center justify-center mb-6"><i data-lucide="${f.icon}" class="h-8 w-8 text-white"></i></div>
+            <h3 class="text-2xl font-semibold mb-4">${f.title}</h3>
+            <p class="text-gray-400 text-lg">${f.desc}</p>
+          </div>
+        </div>`).join('');
+      featuresDots.innerHTML = featuresData.map((_,i)=>`<button class="w-3 h-3 rounded-full ${i===activeFeature?'bg-mottu-green':'bg-gray-600'}" data-i="${i}"></button>`).join('');
+      refreshIcons();
+      updateFeatureTransform();
+      featuresDots.querySelectorAll('button').forEach(btn=>btn.addEventListener('click', (e)=>{ activeFeature = +e.currentTarget.dataset.i; updateFeatureTransform(true); }));
+    }
+    function updateFeatureTransform(resetTimer){ featuresTrack.style.transform = `translateX(-${activeFeature*100}%)`; if(resetTimer){ startFeatureAuto(); } }
+    function nextFeature(){ activeFeature = (activeFeature + 1) % featuresData.length; renderFeatures(); }
+    function prevFeature(){ activeFeature = (activeFeature - 1 + featuresData.length) % featuresData.length; renderFeatures(); }
+    document.getElementById('nextFeature').addEventListener('click', ()=>{ nextFeature(); startFeatureAuto(); });
+    document.getElementById('prevFeature').addEventListener('click', ()=>{ prevFeature(); startFeatureAuto(); });
+    function startFeatureAuto(){ clearInterval(featureInterval); featureInterval = setInterval(()=>{ nextFeature(); }, 5000); }
+    renderFeatures(); startFeatureAuto();
+
+    // Architecture tabs
+    const archTabs = document.getElementById('archTabs');
+    const archContent = document.getElementById('archContent');
+    const archData = {
+      iot: { title:'Camada IoT', desc:'A base física da nossa solução que captura dados em tempo real do pátio.', image:'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', points:[
+        'RFIDs ativos com bateria de longa duração e sinal configurável',
+        'Antenas estrategicamente posicionadas para cobertura completa do pátio',
+        'Gateway central para coleta e transmissão de dados',
+        'Redundância para garantir funcionamento contínuo'
+      ]},
+      processing: { title:'Ingestão e Processamento', desc:'Camada responsável por receber, processar e distribuir os dados de localização.', image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', points:[
+        'Serviço de triangulação para cálculo preciso da posição',
+        'Sistema de eventos e filas para processamento assíncrono',
+        'Algoritmos de filtragem para eliminar ruídos e leituras inconsistentes',
+        'API para integração com outros sistemas da Mottu'
+      ]},
+      vision: { title:'Visão Computacional', desc:'Complementa o sistema RFID com reconhecimento visual das motos.', image:'https://images.unsplash.com/photo-1563770557719-b3fa36fac0fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', points:[
+        'Detecção automática de motos através de câmeras instaladas no pátio',
+        'Reconhecimento de placas para associação com RFIDs',
+        'Identificação de anomalias e situações irregulares',
+        'Confirmação visual da posição calculada pelo sistema RFID'
+      ]},
+      web: { title:'Aplicação Web', desc:'Interface de usuário para visualização e controle do sistema.', image:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', points:[
+        'Dashboard interativo com mapa do pátio em tempo real',
+        'Sistema de busca e localização de motos específicas',
+        'Gerenciamento de dispositivos RFID',
+        'Controle de acesso baseado em papéis (RBAC)',
+        'Suporte a múltiplos idiomas (PT/ES/EN)'
+      ]},
+      analytics: { title:'Dados & Analytics', desc:'Extração de insights para otimização da operação.', image:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', points:[
+        'KPIs de eficiência operacional por unidade',
+        'Métricas de produtividade das equipes',
+        'Análise de densidade e utilização do pátio',
+        'Relatórios de tempo de ciclo de manutenção',
+        'Previsões de demanda baseadas em histórico'
+      ]}
+    };
+    function setActiveArchTab(id){
+      archContent.innerHTML = `
+        <div class="flex flex-col md:flex-row md:space-x-8">
+          <div class="md:w-1/2 mb-6 md:mb-0">
+            <h3 class="text-2xl font-bold text-mottu-black mb-3">${archData[id].title}</h3>
+            <p class="text-gray-600 mb-4">${archData[id].desc}</p>
+            <ul class="space-y-3">${archData[id].points.map(p=>`<li class="flex items-start"><div class="flex-shrink-0 h-5 w-5 rounded-full bg-mottu-green flex items-center justify-center mt-1"><span class="text-white text-xs font-bold">✓</span></div><span class="ml-3 text-gray-700">${p}</span></li>`).join('')}</ul>
+          </div>
+          <div class="md:w-1/2"><div class="rounded-lg overflow-hidden shadow-md"><img src="${archData[id].image}" alt="Ilustração da ${archData[id].title}" class="w-full h-64 object-cover"/></div></div>
+        </div>`;
+      refreshIcons();
+    }
+    archTabs.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+      archTabs.querySelectorAll('button').forEach(b=>b.classList.remove('border-b-2','border-mottu-green','text-mottu-green','bg-gray-50'));
+      btn.classList.add('border-b-2','border-mottu-green','text-mottu-green');
+      setActiveArchTab(btn.dataset.tab);
+    }));
+    // init
+    archTabs.querySelector('button[data-tab="iot"]').classList.add('border-b-2','border-mottu-green','text-mottu-green'); setActiveArchTab('iot');
+
+    // Dashboard tabs & content
+    const dashTabs = document.getElementById('dashTabs');
+    const dashContent = document.getElementById('dashContent');
+    function setDash(tab){
+      dashTabs.querySelectorAll('button').forEach(b=>b.classList.remove('bg-white','border-t-2','border-mottu-green','text-mottu-black'));
+      dashTabs.querySelector(`button[data-tab="${tab}"]`).classList.add('bg-white','border-t-2','border-mottu-green','text-mottu-black');
+      if(tab==='map') renderMap();
+      else if(tab==='search') renderSearch();
+      else if(tab==='inventory') renderInventory();
+      else if(tab==='rfid') renderRFID();
+      else if(tab==='alerts') renderAlerts();
+      else if(tab==='kpis') renderKPIs();
+      else if(tab==='admin') renderAdmin();
+      else if(tab==='manual') renderManual();
+    }
+    dashTabs.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=> setDash(btn.dataset.tab)));
+
+    // Parking lot map demo
+    const parkingSpots = [
+      { id:1, x:10, y:20, status:'occupied', plate:'ABC1234', model:'Honda CG 160', days:3 },
+      { id:2, x:30, y:20, status:'maintenance', plate:'DEF5678', model:'Yamaha Factor 150', days:1 },
+      { id:3, x:50, y:20, status:'available', plate:'GHI9012', model:'Honda Biz 125', days:0 },
+      { id:4, x:70, y:20, status:'occupied', plate:'JKL3456', model:'Honda CG 160', days:5 },
+      { id:5, x:10, y:40, status:'occupied', plate:'MNO7890', model:'Yamaha Factor 150', days:2 },
+      { id:6, x:30, y:40, status:'maintenance', plate:'PQR1234', model:'Honda Biz 125', days:4 },
+      { id:7, x:50, y:40, status:'available', plate:'STU5678', model:'Honda CG 160', days:0 },
+      { id:8, x:70, y:40, status:'occupied', plate:'VWX9012', model:'Yamaha Factor 150', days:1 },
+      { id:9, x:10, y:60, status:'maintenance', plate:'YZA3456', model:'Honda Biz 125', days:6 },
+      { id:10, x:30, y:60, status:'occupied', plate:'BCD7890', model:'Honda CG 160', days:3 },
+      { id:11, x:50, y:60, status:'available', plate:'EFG1234', model:'Yamaha Factor 150', days:0 },
+      { id:12, x:70, y:60, status:'occupied', plate:'HIJ5678', model:'Honda Biz 125', days:2 },
+    ];
+    function renderMap(){
+      dashContent.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-mottu-black">Mapa do Pátio em Tempo Real</h3>
+          <div class="flex space-x-2">
+            <button id="zoomOut" class="p-2 rounded-md bg-gray-100 hover:bg-gray-200" aria-label="Diminuir zoom"><i data-lucide="zoom-out" class="h-5 w-5"></i></button>
+            <button id="zoomIn" class="p-2 rounded-md bg-gray-100 hover:bg-gray-200" aria-label="Aumentar zoom"><i data-lucide="zoom-in" class="h-5 w-5"></i></button>
+            <button class="p-2 rounded-md bg-gray-100 hover:bg-gray-200" title="Camadas"><i data-lucide="layers" class="h-5 w-5"></i></button>
+            <button class="p-2 rounded-md bg-gray-100 hover:bg-gray-200" title="Filtro"><i data-lucide="filter" class="h-5 w-5"></i></button>
+          </div>
+        </div>
+        <div class="flex mb-4 space-x-2">
+          <button data-filter="all" class="px-3 py-1 rounded-md text-sm bg-mottu-green text-white">Todas</button>
+          <button data-filter="occupied" class="px-3 py-1 rounded-md text-sm bg-gray-100 hover:bg-gray-200">Em Uso</button>
+          <button data-filter="maintenance" class="px-3 py-1 rounded-md text-sm bg-gray-100 hover:bg-gray-200">Manutenção</button>
+          <button data-filter="available" class="px-3 py-1 rounded-md text-sm bg-gray-100 hover:bg-gray-200">Disponíveis</button>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto" style="height:400px;">
+          <div id="lot" class="relative bg-white rounded border border-gray-300" style="width:800px;height:600px;transform-origin: top left; transition: transform .3s ease;">
+            <div class="absolute inset-0" style="background-size:20px 20px;background-image:linear-gradient(to right,#f0f0f0 1px,transparent 1px),linear-gradient(to bottom,#f0f0f0 1px,transparent 1px);"></div>
+            <div class="absolute left-0 top-0 w-full h-16 bg-gray-100 border-b border-gray-300 flex items-center justify-center">
+              <span class="text-gray-600 font-medium">Entrada do Pátio</span>
+            </div>
+            <div class="absolute left-0 bottom-0 w-full h-16 bg-gray-100 border-t border-gray-300 flex items-center justify-center">
+              <span class="text-gray-600 font-medium">Área de Manutenção</span>
+            </div>
+            <div class="absolute right-0 top-16 w-24 h-[calc(100%-32px)] bg-gray-100 border-l border-gray-300 flex items-center justify-center">
+              <span class="text-gray-600 font-medium -rotate-90">Escritório</span>
+            </div>
+            <div id="spots"></div>
+          </div>
+        </div>
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-blue-50 p-3 rounded-lg border border-blue-100"><p class="text-sm text-blue-800 font-medium">Em Uso</p><p class="text-xl font-bold" id="statOccupied"></p></div>
+          <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-100"><p class="text-sm text-yellow-800 font-medium">Em Manutenção</p><p class="text-xl font-bold" id="statMaint"></p></div>
+          <div class="bg-green-50 p-3 rounded-lg border border-green-100"><p class="text-sm text-green-800 font-medium">Disponíveis</p><p class="text-xl font-bold" id="statAvail"></p></div>
+        </div>`;
+      refreshIcons();
+      let zoom = 1; const lot = document.getElementById('lot'); const spotsEl = document.getElementById('spots');
+      function color(status){ return status==='occupied'?'bg-blue-500':status==='maintenance'?'bg-yellow-500':status==='available'?'bg-green-500':'bg-gray-500'; }
+      let filter='all';
+      function renderSpots(){
+        const items = parkingSpots.filter(s=> filter==='all' || s.status===filter).map(spot=>`<div class="absolute w-12 h-8 ${color(spot.status)} rounded-md cursor-pointer hover:ring-2 hover:ring-mottu-green transition-all duration-200 flex items-center justify-center text-white font-bold text-xs" style="left:${spot.x}px; top:${spot.y}px;" title="${spot.plate} - ${spot.model}">${spot.id}</div>`).join('');
+        spotsEl.innerHTML = items;
+        document.getElementById('statOccupied').textContent = parkingSpots.filter(s=>s.status==='occupied').length + ' motos';
+        document.getElementById('statMaint').textContent = parkingSpots.filter(s=>s.status==='maintenance').length + ' motos';
+        document.getElementById('statAvail').textContent = parkingSpots.filter(s=>s.status==='available').length + ' motos';
+      }
+      renderSpots();
+      document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click', (e)=>{
+        document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('bg-mottu-green','text-white'));
+        e.currentTarget.classList.add('bg-mottu-green','text-white');
+        filter = e.currentTarget.getAttribute('data-filter'); renderSpots();
+      }));
+      document.getElementById('zoomIn').addEventListener('click', ()=>{ if(zoom<2){ zoom+=0.25; lot.style.transform=`scale(${zoom})`; } });
+      document.getElementById('zoomOut').addEventListener('click', ()=>{ if(zoom>0.5){ zoom-=0.25; lot.style.transform=`scale(${zoom})`; } });
+    }
+
+    function renderSearch(){
+      dashContent.innerHTML = `
+        <form id="searchForm" class="flex items-center space-x-2 mb-4">
+          <input id="searchTerm" class="flex-1 border border-gray-300 rounded-md px-4 py-2" placeholder="Placa ou modelo..." />
+          <button class="bg-mottu-green text-mottu-black px-4 py-2 rounded-md"><i data-lucide="search" class="h-5 w-5"></i></button>
+        </form>
+        <div id="results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>`;
+      refreshIcons();
+      const motos = [
+        { id:1, plate:'ABC1234', model:'Honda CG 160', status:'Em uso', location:'A3', lastSeen:'2 minutos atrás' },
+        { id:2, plate:'DEF5678', model:'Yamaha Factor 150', status:'Manutenção', location:'B7', lastSeen:'5 minutos atrás' },
+        { id:3, plate:'GHI9012', model:'Honda Biz 125', status:'Disponível', location:'C2', lastSeen:'1 minuto atrás' },
+        { id:4, plate:'JKL3456', model:'Honda CG 160', status:'Em uso', location:'D5', lastSeen:'3 minutos atrás' },
+        { id:5, plate:'MNO7890', model:'Yamaha Factor 150', status:'Em uso', location:'A8', lastSeen:'7 minutos atrás' }
+      ];
+      document.getElementById('searchForm').addEventListener('submit', (e)=>{
+        e.preventDefault(); const q = document.getElementById('searchTerm').value.trim().toLowerCase();
+        const res = q ? motos.filter(m=>m.plate.toLowerCase().includes(q) || m.model.toLowerCase().includes(q)) : [];
+        const grid = document.getElementById('results');
+        grid.innerHTML = res.map(m=>`<div class="border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2"><div class="font-semibold">${m.plate} — ${m.model}</div><span class="text-xs px-2 py-1 rounded bg-gray-100">${m.status}</span></div>
+          <div class="text-sm text-gray-600 flex items-center"><i data-lucide="map-pin" class="h-4 w-4 mr-1"></i> Posição: ${m.location}</div>
+          <div class="text-xs text-gray-500 mt-1">Visto por último: ${m.lastSeen}</div>
+        </div>`).join('');
+        refreshIcons();
+      });
+    }
+
+    function renderInventory(){
+      dashContent.innerHTML = '<div class="text-gray-600">Inventário RFID (demo) — liste dispositivos, status de bateria, última leitura etc.</div>';
+    }
+    function renderRFID(){
+      dashContent.innerHTML = '<div class="text-gray-600">Vincular RFID (demo) — formulário para associar dispositivo a uma moto.</div>';
+    }
+    function renderAlerts(){
+      dashContent.innerHTML = '<div class="text-gray-600">Alertas (demo) — movimentações suspeitas, leituras inconsistentes, etc.</div>';
+    }
+    function renderKPIs(){
+      dashContent.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white border border-gray-200 p-4 rounded-lg"><div class="text-sm text-gray-500">Tempo médio de busca</div><div class="text-2xl font-bold">2m 10s</div></div>
+          <div class="bg-white border border-gray-200 p-4 rounded-lg"><div class="text-sm text-gray-500">Motos paradas &gt; 3 dias</div><div class="text-2xl font-bold">14</div></div>
+          <div class="bg-white border border-gray-200 p-4 rounded-lg"><div class="text-sm text-gray-500">SLA de manutenção</div><div class="text-2xl font-bold">92%</div></div>
+        </div>`;
+    }
+    function renderAdmin(){
+      dashContent.innerHTML = '<div class="text-gray-600">Administração (demo) — usuários, perfis de acesso, unidades.</div>';
+    }
+    function renderManual(){
+      dashContent.innerHTML = '<div class="text-gray-600">Modo manual (demo) — arraste e solte posições, correções pontuais.</div>';
+    }
+
+    // Initialize default dashboard tab
+    setDash('map');
+
+    // Footer year & back to top
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('toTop').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // ensure icons render after DOM ready
+    document.addEventListener('DOMContentLoaded', refreshIcons);
+    refreshIcons();
+  </script>
+</body>
+</html>
