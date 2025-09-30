@@ -2,7 +2,6 @@
 
 Aplicação **web** (Thymeleaf) construída em **Spring Boot 3** para administrar pátios, dispositivos **IoT** e **motos**, com autenticação (OAuth2 + formulário), **dashboard** e UI dark usando **TailwindCSS** (CDN).
 
-> Este README substitui o antigo “Patio Vision” — todo o projeto passou a se chamar **TechLab**.
 
 ---
 
