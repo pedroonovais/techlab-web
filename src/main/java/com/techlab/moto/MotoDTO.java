@@ -24,4 +24,10 @@ public class MotoDTO {
     private LocalDateTime dataEntrada;
 
     private LocalDateTime dataSaida;
+
+    // ID do dispositivo IoT associado (opcional)
+    private Long iotId;
+
+    // ID do pátio onde a moto está (opcional)
+    private Long patioId;
 }
