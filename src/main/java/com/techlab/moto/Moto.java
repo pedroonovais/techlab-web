@@ -1,5 +1,7 @@
 package com.techlab.moto;
 
+import com.techlab.iot.Iot;
+import com.techlab.patio.Patio;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -29,4 +31,14 @@ public class Moto {
 
     @Column(name = "data_saida")
     private LocalDateTime dataSaida;
+
+    // Relacionamento Many-to-One com Iot (uma moto pode ter um dispositivo IoT associado)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "iot_id", nullable = true)
+    private Iot iot;
+
+    // Relacionamento Many-to-One com Patio (uma moto está em um pátio)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patio_id", nullable = true)
+    private Patio patio;
 }

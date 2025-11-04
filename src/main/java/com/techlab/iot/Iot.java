@@ -20,6 +20,7 @@ public class Iot {
     private Long id;
 
     @NotNull(message = "O status (ativo) é obrigatório.")
+    @Column(columnDefinition = "NUMBER(1)")
     private Boolean ativo;
 
     @Min(0) @Max(100)

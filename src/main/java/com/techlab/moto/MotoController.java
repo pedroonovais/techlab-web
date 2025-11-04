@@ -1,6 +1,8 @@
 package com.techlab.moto;
 
 import com.techlab.helper.BaseController;
+import com.techlab.iot.IotService;
+import com.techlab.patio.PatioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MotoController extends BaseController {
 
     private final MotoService motoService;
+    private final IotService iotService;
+    private final PatioService patioService;
 
     @GetMapping
     public String index(Model model, Authentication authentication) {
@@ -30,6 +34,9 @@ public class MotoController extends BaseController {
             Authentication authentication) {
         MotoDTO dto = (id != null) ? motoService.findById(id) : new MotoDTO();
         model.addAttribute("moto", dto);
+        // Adicionar listas de IoT e Pátios para seleção no formulário
+        model.addAttribute("iots", iotService.findAll());
+        model.addAttribute("patios", patioService.findAll());
         addPrincipal(model, authentication);
         return "moto/form";
     }
@@ -43,6 +50,9 @@ public class MotoController extends BaseController {
 
         if (result.hasErrors()) {
             model.addAttribute("moto", dto);
+            // Adicionar listas de IoT e Pátios em caso de erro
+            model.addAttribute("iots", iotService.findAll());
+            model.addAttribute("patios", patioService.findAll());
             addPrincipal(model, authentication);
             return "moto/form";
         }
@@ -53,6 +63,9 @@ public class MotoController extends BaseController {
             // Exibe erro de negócio (ex.: placa duplicada)
             result.rejectValue("placa", "placa.duplicada", e.getMessage());
             model.addAttribute("moto", dto);
+            // Adicionar listas de IoT e Pátios em caso de erro
+            model.addAttribute("iots", iotService.findAll());
+            model.addAttribute("patios", patioService.findAll());
             addPrincipal(model, authentication);
             return "moto/form";
         }

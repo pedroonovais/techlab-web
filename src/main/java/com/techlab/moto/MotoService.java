@@ -1,5 +1,7 @@
 package com.techlab.moto;
 
+import com.techlab.iot.IotRepository;
+import com.techlab.patio.PatioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 public class MotoService {
 
     private final MotoRepository motoRepository;
+    private final IotRepository iotRepository;
+    private final PatioRepository patioRepository;
 
     public List<MotoDTO> findAll() {
         return motoRepository.findAll().stream()
@@ -53,16 +57,41 @@ public class MotoService {
                 .placa(m.getPlaca())
                 .dataEntrada(m.getDataEntrada())
                 .dataSaida(m.getDataSaida())
+                .iotId(m.getIot() != null ? m.getIot().getId() : null)
+                .patioId(m.getPatio() != null ? m.getPatio().getId() : null)
                 .build();
     }
 
     private Moto toEntity(MotoDTO dto) {
-        return Moto.builder()
+        Moto.MotoBuilder builder = Moto.builder()
                 .id(dto.getId())
                 .modelo(dto.getModelo())
                 .placa(dto.getPlaca())
                 .dataEntrada(dto.getDataEntrada())
-                .dataSaida(dto.getDataSaida())
-                .build();
+                .dataSaida(dto.getDataSaida());
+
+        // Mapear relacionamento com IoT se fornecido
+        if (dto.getIotId() != null) {
+            iotRepository.findById(dto.getIotId())
+                    .ifPresentOrElse(
+                            builder::iot,
+                            () -> {
+                                throw new RuntimeException("Dispositivo IoT não encontrado com ID: " + dto.getIotId());
+                            }
+                    );
+        }
+
+        // Mapear relacionamento com Pátio se fornecido
+        if (dto.getPatioId() != null) {
+            patioRepository.findById(dto.getPatioId())
+                    .ifPresentOrElse(
+                            builder::patio,
+                            () -> {
+                                throw new RuntimeException("Pátio não encontrado com ID: " + dto.getPatioId());
+                            }
+                    );
+        }
+
+        return builder.build();
     }
 }
