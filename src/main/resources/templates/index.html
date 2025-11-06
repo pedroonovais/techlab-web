@@ -66,8 +66,7 @@
         </section>
 
         <!-- Resumos -->
-        <section class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Resumo IoT -->
+        <section class="mb-6">
             <div class="rounded-xl bg-gray-800 border border-gray-700 p-6 shadow-2xl">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-bold text-lg">Resumo de IoT</h3>
@@ -122,40 +121,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Motos recentes -->
-            <div class="rounded-xl bg-gray-800 border border-gray-700 p-6 shadow-2xl">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-lg">Motos Recentes</h3>
-                    <a href="/moto" class="text-cyan-400 hover:text-cyan-300 text-sm">Ver todas</a>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm">
-                        <thead>
-                            <tr class="text-left text-gray-400">
-                                <th class="py-2 pr-4">Modelo</th>
-                                <th class="py-2 pr-4">Placa</th>
-                                <th class="py-2 pr-4">Entrada</th>
-                                <th class="py-2 pr-4">Saída</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700">
-                            <tr th:if="${#lists.isEmpty(motos)}">
-                                <td colspan="4" class="py-3 text-gray-400">Sem registros.</td>
-                            </tr>
-                            <tr th:each="m : ${motos}">
-                                <td class="py-2 pr-4" th:text="${m.modelo}">—</td>
-                                <td class="py-2 pr-4" th:text="${m.placa}">—</td>
-                                <td class="py-2 pr-4" th:text="${#dates.format(m.dataEntrada, 'dd/MM/yyyy HH:mm')}">—
-                                </td>
-                                <td class="py-2 pr-4"
-                                    th:text="${m.dataSaida != null ? #dates.format(m.dataSaida, 'dd/MM/yyyy HH:mm') : '—'}">
-                                    —</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </section>
