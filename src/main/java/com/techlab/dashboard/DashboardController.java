@@ -26,11 +26,10 @@ public class DashboardController extends BaseController {
     public String index(Model model, Authentication authentication) {
         var patios = patioService.findAll();
         var iots = iotService.findAll(); // ENTIDADES
-        var motos = motoService.findAll();
-
+        
         long totalPatios = patios.size();
         long totalIots = iots.size();
-        long totalMotos = motos.size();
+        long totalMotos = motoService.findAll().size();
 
         long iotsAtivos = iots.stream().filter(i -> Boolean.TRUE.equals(i.getAtivo())).count();
 
@@ -59,7 +58,6 @@ public class DashboardController extends BaseController {
 
         model.addAttribute("patios", patios);
         model.addAttribute("iots", iots);
-        model.addAttribute("motos", motos);
 
         model.addAttribute("totalPatios", totalPatios);
         model.addAttribute("totalIots", totalIots);
