@@ -117,7 +117,7 @@ docker run -p 8080:8080 --name techlab   -e ACTIVE_PROFILE=prod   -e DB_URL=jdbc
 
 ## 🗂️ Banco de Dados (modelo atual)
 
-Tabelas principais mantidas pelo projeto:
+Tabelas principais mantidas pelo projeto
 
 ```sql
 -- patio
