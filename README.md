@@ -194,8 +194,6 @@ CREATE TABLE moto (
 - **Moto** → **IoT** (Many-to-One): Uma moto pode ter um dispositivo IoT associado
 - **Moto** → **Patio** (Many-to-One): Uma moto está em um pátio
 
-> Observação: O domínio **não** utiliza mais "Setor". IoT, Moto e Pátio são gerenciados de forma independente, com relacionamentos opcionais entre Moto e IoT/Patio.
-
 ---
 
 ## 🌐 Rotas Principais
